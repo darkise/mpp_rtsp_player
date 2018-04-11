@@ -10,7 +10,7 @@ CXX           = g++
 DEFINES       = -DDEBUG=1
 CFLAGS        = -pipe -O2 -Wall -W -fPIC $(DEFINES)
 CXXFLAGS      = -pipe -O2 -std=c++0x -Wall -W -fPIC $(DEFINES)
-INCPATH       = -I../../mpp_rtsp -I. -I/usr/lib/aarch64-linux-gnu/qt5/mkspecs/linux-g++
+INCPATH       = -I. -I/usr/lib/aarch64-linux-gnu/qt5/mkspecs/linux-g++
 QMAKE         = /usr/lib/aarch64-linux-gnu/qt5/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
