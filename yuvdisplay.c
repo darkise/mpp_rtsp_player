@@ -186,7 +186,6 @@ int initWindow()
     Window root;
     XSetWindowAttributes swa;
     XSetWindowAttributes  xattr;
-    Atom wm_state;
     XWMHints hints;
     XEvent xev;
     EGLint numConfigs;
@@ -201,11 +200,11 @@ int initWindow()
 
     // X11 windows initialise
     x_display = XOpenDisplay(NULL);
-    if(x_display == NULL) {
+    if (x_display == NULL) {
         return -1;
     }
+#if 0
     root = DefaultRootWindow(x_display);
-
     swa.event_mask  =  ExposureMask | PointerMotionMask | KeyPressMask;
     hWnd = XCreateWindow(
                x_display, root,
@@ -213,7 +212,10 @@ int initWindow()
                CopyFromParent, InputOutput,
                CopyFromParent, CWEventMask,
                &swa);
-
+#else
+    hWnd = XCreateSimpleWindow(x_display, RootWindow(x_display, 0), 0, 0, 10, 10,
+                               0, BlackPixel (x_display, 0), BlackPixel(x_display, 0));
+#endif
     xattr.override_redirect = 0;
     XChangeWindowAttributes(x_display, hWnd, CWOverrideRedirect, &xattr);
 
@@ -223,22 +225,22 @@ int initWindow()
 
     // make the window visible on the screen
     XMapWindow(x_display, hWnd);
-    XStoreName(x_display, hWnd, WINDOWS_TITLE);
+    //XStoreName(x_display, hWnd, WINDOWS_TITLE);
 
     // get identifiers for the provided atom name strings
-    wm_state = XInternAtom (x_display, "_NET_WM_STATE", False);
+    Atom wm_state = XInternAtom (x_display, "_NET_WM_STATE", False);
     Atom fullscreen = XInternAtom(x_display, "_NET_WM_STATE_FULLSCREEN", False);
-    Atom fullmons = XInternAtom(x_display, "_NET_WM_FULLSCREEN_MONITORS", False);
+    //Atom fullmons = XInternAtom(x_display, "_NET_WM_FULLSCREEN_MONITORS", False);
     memset(&xev, 0, sizeof(xev));
     xev.type                 = ClientMessage;
     xev.xclient.window       = hWnd;
-    xev.xclient.message_type = fullmons;
+    xev.xclient.message_type = wm_state;
     xev.xclient.format       = 32;
-    xev.xclient.data.l[0] = 0; /* your topmost monitor number */
-    xev.xclient.data.l[1] = 0; /* bottommost */
+    xev.xclient.data.l[0] = 1; /* your topmost monitor number */
+    xev.xclient.data.l[1] = fullscreen; /* bottommost */
     xev.xclient.data.l[2] = 0; /* leftmost */
-    xev.xclient.data.l[3] = 1; /* rightmost */
-    xev.xclient.data.l[4] = 0; /* source indication */
+    //xev.xclient.data.l[3] = 1; /* rightmost */
+    //xev.xclient.data.l[4] = 0; /* source indication */
     XSendEvent (
        x_display,
        DefaultRootWindow(x_display),
