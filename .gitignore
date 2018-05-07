@@ -1,0 +1,3 @@
+*.o
+rkdrm/*.o
+rkmpp_player

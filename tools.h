@@ -5,7 +5,7 @@
 
 #define msleep(x) usleep((x)*1000)
 
-inline unsigned long long int current_ms()
+static inline unsigned long long int current_ms()
 {
     unsigned long long int res = 0;
     struct timeval tv;

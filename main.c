@@ -5,7 +5,7 @@
 #include "tools.h"
 #include "rtspprotocolutil.h"
 #include "mppdecoder.h"
-#include "yuvdisplay.h"
+#include "rkdrm.h"
 
 #if 0
 // 将一个YUV帧存入文件，便于使用外部解码器来检验解码的正确性
@@ -28,7 +28,6 @@ static void save_frame(frame_st* frame)
     }
     fclose(fp);
 }
-#endif
 
 static void _copy_frame(frame_st* frame)
 {
@@ -50,6 +49,7 @@ static void _copy_frame(frame_st* frame)
         memcpy(wp, base_c, frame->width);
     }
 }
+#endif
 
 static void *
        thread_rtsp_mpp(void *arg)
@@ -77,8 +77,8 @@ static void *
 
 int main()
 {
-    unsigned long long int ldt = current_ms();
-    unsigned long long int count = 0, miss = 0;
+    //unsigned long long int ldt = current_ms();
+    //unsigned long long int count = 0, miss = 0;
     // Initialise RTSP client
     if (RtspProtocolUtil_init("rtsp://192.168.199.30:554/h264/ch1/main/av_stream")) {
         fprintf(stderr, "RTSP initialise error.\n");
@@ -88,6 +88,8 @@ int main()
     // Initialise MPP decoder
     mppDecoder();
 
+    rkdrm_init();
+#if 0
     // Initialise EGL display
     if (initWindow()) {
         printf("Initialise windows error.\n");
@@ -97,11 +99,12 @@ int main()
         printf("Initialise OpenGL shader error.\n");
         return -1;
     }
-
+#endif
     pthread_t thread;
     pthread_create(&thread, NULL, &thread_rtsp_mpp, NULL);
-    unsigned long long int espc = 0, espd = 0, disp = 0;
+    //unsigned long long int espc = 0, espd = 0, disp = 0;
     while (1) {
+#if 0
         // Try to get a YUV frame
         count++;
         frame_st* frame = decoder_frame();
@@ -130,7 +133,13 @@ unsigned long long int b3 = current_ms();
             ldt = now;
             espc = espd = disp = 0;
         }
+#else
+        msleep(1000);
+#endif
     }
+
+    rkdrm_fini();
+
     return 0;
 }
 

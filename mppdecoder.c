@@ -2,6 +2,7 @@
 #include <string.h>
 #include <pthread.h>
 #include "tools.h"
+#include "rkdrm.h"
 
 #include "rockchip/rk_mpi.h"
 #include "rockchip/mpp_buffer.h"
@@ -53,7 +54,7 @@ pthread_mutex_t frames_lock;
 frame_st* frames[MAX_BUFFER_FRAMES];
 RK_U32  frames_r, frames_w;
 
-static void put_frame(RK_U64 ms, RK_U8* buf, RK_U32 width, RK_U32 heigth, RK_U32 h_stride, RK_U32 v_stride, size_t bsz);
+void put_frame(RK_U64 ms, RK_U8* buf, RK_U32 width, RK_U32 heigth, RK_U32 h_stride, RK_U32 v_stride, size_t bsz);
 static void frame_out(RK_U64 ms);
 
 int mppDecoder()
@@ -283,6 +284,7 @@ void decoder_routine()
 
 void frame_out(RK_U64 ms)
 {
+#if 0
     RK_U32 width    = 0;
     RK_U32 height   = 0;
     RK_U32 h_stride = 0;
@@ -317,6 +319,11 @@ void frame_out(RK_U64 ms)
         mpp_err("not supported format %d\n", fmt);
         break;
     }
+#else
+    (void)ms;
+    rkdrm_display(frame);
+    mpp_log("picture of count: %u\n", mpp_frame_get_poc(frame));
+#endif
 }
 
 void put_frame(RK_U64 ms, RK_U8* buf, RK_U32 width, RK_U32 height, RK_U32 h_stride, RK_U32 v_stride, size_t bsz)
