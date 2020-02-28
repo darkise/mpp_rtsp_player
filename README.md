@@ -8,6 +8,7 @@ rockchip_mpp
 
 功能
 获取RTSP流（H264）格式，使用mpp进行硬解码，再使用OpenGL ES 2.0进行显示
+
 Usage:
 ```
 cd mpp_rtsp_play
@@ -43,6 +44,7 @@ CSeq: 3
 User-Agent: Darkise rtsp player 1.0
 Transport: RTP/AVP/TCP;unicast;interleaved=0-1
 ```
+refer:https://github.com/mayunxi/mpp_rtsp_player/wiki/the-correct-rtsp
 
 2. remove the function of rkdrm
 
