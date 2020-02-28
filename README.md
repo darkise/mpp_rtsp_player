@@ -37,6 +37,10 @@ RTSP initialise error.
 ```
 refer:https://www.cnblogs.com/lidabo/p/6553212.html
 
+trackID＝0表示视频流用的是通道0
+
+if the IPC have mutiple channels,you must select  one channel,there,wo chose the main stream,track = 0
+
 the correct request should like this:
 ```
 send request. SETUP rtsp://192.168.1.88/Onvif/live/1/1/trackID=0 RTSP/1.0
