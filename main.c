@@ -75,12 +75,21 @@ static void *
     return NULL;
 }
 
-int main()
+int main(int argc,int *argv[])
 {
     //unsigned long long int ldt = current_ms();
     //unsigned long long int count = 0, miss = 0;
     // Initialise RTSP client
-    if (RtspProtocolUtil_init("rtsp://192.168.199.30:554/h264/ch1/main/av_stream")) {
+    char *url;
+    if (argc>=2)
+    {
+        url = argv[1];
+    }
+    else
+    {
+        url = "rtsp://192.168.1.88:554/Onvif/live/1/1";
+    }
+    if (RtspProtocolUtil_init(url)) {
         fprintf(stderr, "RTSP initialise error.\n");
         exit(-1);
     }
@@ -88,7 +97,7 @@ int main()
     // Initialise MPP decoder
     mppDecoder();
 
-    rkdrm_init();
+   // rkdrm_init();
 #if 0
     // Initialise EGL display
     if (initWindow()) {
@@ -138,7 +147,7 @@ unsigned long long int b3 = current_ms();
 #endif
     }
 
-    rkdrm_fini();
+   // rkdrm_fini();
 
     return 0;
 }

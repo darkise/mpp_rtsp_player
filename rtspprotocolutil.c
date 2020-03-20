@@ -10,7 +10,7 @@
 #include <sys/poll.h>
 #include <netdb.h>    // gethostbyname
 #include <arpa/inet.h> // htons/ntohs
-
+#include <stdbool.h>
 typedef struct RtspCntHeader {
     uint8_t  magic;        // 0x24
     uint8_t  channel;
@@ -202,6 +202,7 @@ static int rtsp_init()
     }
     // SETUP
     if (setup(rtspTimeout)) {
+        printf("setup time out\n");
         close(rtspSocket);
         rtspSocket = -1;
         return -1;
@@ -485,6 +486,7 @@ static int _setup_interleaved(int ms)
     if (_wait_response(ms, resp, sizeof(resp))) {
         return -1;
     }
+    printf("setup response:%s\n",resp);
     // Parse response
     _parse_session(resp);
 
@@ -652,11 +654,28 @@ static int _parse_sdp(char const* resp)
             pr += (sizeof(SDP_CONTROL)-1);
             // Parse control
             // Skip blank or '\t'
-            while (' ' == *pr || '\t' == *pr) pr++;
-            int w = 0;
-            while (*pr != '\0' && *pr != '\r' && *pr != '\n')
-                control[w++] = *pr++;
-            control[w] = '\0';
+            static bool haveFlag = false;
+            static int w=0;
+            if (strncmp(pr,"track",strlen("track"))==0)
+            {
+                if (haveFlag == false)
+                {
+                    while (' ' == *pr || '\t' == *pr) pr++;
+
+                    while (*pr != '\0' && *pr != '\r' && *pr != '\n')
+                        control[w++] = *pr++;
+                    control[w] = '\0';
+                }
+                haveFlag = true;
+            }
+            else
+            {
+                while (' ' == *pr || '\t' == *pr) pr++;
+
+                while (*pr != '\0' && *pr != '\r' && *pr != '\n')
+                    control[w++] = *pr++;
+                control[w] = '\0';
+            }
         }
 
 next_line:

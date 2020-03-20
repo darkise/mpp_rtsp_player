@@ -321,7 +321,7 @@ void frame_out(RK_U64 ms)
     }
 #else
     (void)ms;
-    rkdrm_display(frame);
+    //rkdrm_display(frame);
     mpp_log("picture of count: %u\n", mpp_frame_get_poc(frame));
 #endif
 }
